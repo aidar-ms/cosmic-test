@@ -4,17 +4,22 @@ import pandas as pd
 def count_unique_icgc_mutations(data: pd.DataFrame):
     """Count unique icgc_mutation_id's for all possible combinations of mutated_from_allele and mutated_to_allele.
     """
-    return data.groupby(["mutated_from_allele", "mutated_to_allele"])["icgc_mutation_id"] \
-               .nunique().reset_index().rename({"icgc_mutation_id": "count_unique_icgc_mutation_ids"}, axis=1)
+    # Create new DF with unique mutation counts
+    data = data.groupby(["mutated_from_allele", "mutated_to_allele"])["icgc_mutation_id"].nunique().reset_index()
+    # Make the name of the column with unique mutation counts more descriptive
+    return data.rename({"icgc_mutation_id": "count_unique_icgc_mutation_ids"}, axis=1)
 
 
 def get_sorted_mutation_count(data: pd.DataFrame):
     """Count unique icgc_mutation_id-s per each icgc_sample_id and sort records by count.
     For icgc_sample_id-s with equal number of mutations, sort alphanumerically
     """
-    return data.groupby(["icgc_sample_id"])["icgc_mutation_id"].nunique() \
-               .reset_index().sort_values(["icgc_mutation_id", "icgc_sample_id"], ascending=[False, True]) \
-               .rename({"icgc_mutation_id": "uniq_icgc_mutation_count"}, axis=1)
+    # Create new DF with unique mutation counts
+    data = data.groupby(["icgc_sample_id"])["icgc_mutation_id"].nunique().reset_index()
+    # Sort values by unique mutation counts and by icgc_sample_id (alphanumerically)
+    data = data.sort_values(["icgc_mutation_id", "icgc_sample_id"], ascending=[False, True])
+    # Reset index after sorting and make the name of the column with unique mutation counts more descriptive
+    return data.reset_index(drop=True).rename({"icgc_mutation_id": "uniq_icgc_mutation_count"}, axis=1)
 
 
 def get_max_and_min_icgc_mutation_count(data: pd.DataFrame):

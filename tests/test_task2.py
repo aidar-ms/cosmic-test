@@ -1,5 +1,5 @@
 import pandas as pd
-from task2.utils import count_unique_icgc_mutations, get_max_and_min_icgc_mutation_count
+from task2.utils import count_unique_icgc_mutations, get_max_and_min_icgc_mutation_count, get_sorted_mutation_count
 
 
 def test_count_unique_icgc_mutations():
@@ -27,6 +27,33 @@ def test_count_unique_icgc_mutations():
         assert len(uniq_mutation_count.count_unique_icgc_mutation_ids.values) == 1
         # Confirm that the unique count matches static expected value
         assert uniq_mutation_count.count_unique_icgc_mutation_ids.values[0] == expected_count
+
+
+def test_get_sorted_mutation_count():
+    """get_sorted_mutation_count accepts the source dataframe and returns unique mutation counts per each sample id,
+    sorted by counts and alphanumerically by sample id
+    """
+    data = pd.DataFrame(
+        [
+            ["SA1", "MU1"],
+            ["SA1", "MU2"],
+            ["SA2", "MU3"],
+            ["SA2", "MU4"],
+            ["SA2", "MU5"],
+            ["SA3", "MU6"],
+            ["SA4", "MU7"]
+        ],
+        columns=["icgc_sample_id", "icgc_mutation_id"]
+    )
+    expected_result = [("SA2", 3), ("SA1", 2), ("SA3", 1), ("SA4", 1)]
+
+    sorted_mutation_count = get_sorted_mutation_count(data)
+    for sample_id, mutation_count in expected_result:
+        selection = sorted_mutation_count[sorted_mutation_count.icgc_sample_id == sample_id]
+        # Each sample id should have one record in the aggregated DF
+        assert len(selection) == 1
+        # Confirm that the mutation count matches static expected value
+        assert selection.uniq_icgc_mutation_count.values[0] == mutation_count
 
 
 def test_get_max_and_min_icgc_mutation_count():
