@@ -7,7 +7,7 @@ def count_unique_icgc_mutations(data: pd.DataFrame):
     # Create new DF with unique mutation counts
     data = data.groupby(["mutated_from_allele", "mutated_to_allele"])["icgc_mutation_id"].nunique().reset_index()
     # Make the name of the column with unique mutation counts more descriptive
-    return data.rename({"icgc_mutation_id": "count_unique_icgc_mutation_ids"}, axis=1)
+    return data.rename({"icgc_mutation_id": "uniq_count_icgc_mutation"}, axis=1)
 
 
 def get_sorted_mutation_count(data: pd.DataFrame):
@@ -19,7 +19,7 @@ def get_sorted_mutation_count(data: pd.DataFrame):
     # Sort values by unique mutation counts and by icgc_sample_id (alphanumerically)
     data = data.sort_values(["icgc_mutation_id", "icgc_sample_id"], ascending=[False, True])
     # Reset index after sorting and make the name of the column with unique mutation counts more descriptive
-    return data.reset_index(drop=True).rename({"icgc_mutation_id": "uniq_icgc_mutation_count"}, axis=1)
+    return data.reset_index(drop=True).rename({"icgc_mutation_id": "uniq_count_icgc_mutation"}, axis=1)
 
 
 def get_max_and_min_icgc_mutation_count(data: pd.DataFrame):
@@ -29,11 +29,11 @@ def get_max_and_min_icgc_mutation_count(data: pd.DataFrame):
     """
     icgc_sorted_count = get_sorted_mutation_count(data)
 
-    max_count = icgc_sorted_count.head(1).uniq_icgc_mutation_count.values[0]
-    max_count_sample_id = icgc_sorted_count[icgc_sorted_count.uniq_icgc_mutation_count == max_count].head(1).icgc_sample_id.values[0]
+    max_count = icgc_sorted_count.head(1).uniq_count_icgc_mutation.values[0]
+    max_count_sample_id = icgc_sorted_count[icgc_sorted_count.uniq_count_icgc_mutation == max_count].head(1).icgc_sample_id.values[0]
 
-    min_count= icgc_sorted_count.tail(1).uniq_icgc_mutation_count.values[0]
-    min_count_sample_id = icgc_sorted_count[icgc_sorted_count.uniq_icgc_mutation_count == min_count].head(1).icgc_sample_id.values[0]
+    min_count= icgc_sorted_count.tail(1).uniq_count_icgc_mutation.values[0]
+    min_count_sample_id = icgc_sorted_count[icgc_sorted_count.uniq_count_icgc_mutation == min_count].head(1).icgc_sample_id.values[0]
 
     return (
         {"icgc_sample_id": max_count_sample_id, "mutation_count": max_count},

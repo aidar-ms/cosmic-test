@@ -24,9 +24,9 @@ def test_count_unique_icgc_mutations():
     for mutated_from, mutated_to, expected_count in expected_result:
         uniq_mutation_count = result[(result.mutated_from_allele == mutated_from) & (result.mutated_to_allele == mutated_to)]
         # Records are grouped by mutation pairs, so each mutation pair must have only one record in the aggregated DF
-        assert len(uniq_mutation_count.count_unique_icgc_mutation_ids.values) == 1
+        assert len(uniq_mutation_count.uniq_count_icgc_mutation.values) == 1
         # Confirm that the unique count matches static expected value
-        assert uniq_mutation_count.count_unique_icgc_mutation_ids.values[0] == expected_count
+        assert uniq_mutation_count.uniq_count_icgc_mutation.values[0] == expected_count
 
 
 def test_get_sorted_mutation_count():
@@ -53,7 +53,7 @@ def test_get_sorted_mutation_count():
         # Each sample id should have one record in the aggregated DF
         assert len(selection) == 1
         # Confirm that the mutation count matches static expected value
-        assert selection.uniq_icgc_mutation_count.values[0] == mutation_count
+        assert selection.uniq_count_icgc_mutation.values[0] == mutation_count
 
 
 def test_get_max_and_min_icgc_mutation_count():
