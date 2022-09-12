@@ -12,7 +12,10 @@ def count_unique_icgc_mutations(data: pd.DataFrame):
 
 def get_sorted_mutation_count(data: pd.DataFrame):
     """Count unique icgc_mutation_id-s per each icgc_sample_id and sort records by count.
-    For sample ids with equal number of mutations, sort alphanumerically
+    For sample ids with equal number of mutations, sort alphanumerically.
+
+    NOTE: In a real application, it might've been more useful to return all sample ids that have a maximum/minimum number of mutations
+    But for this task, one sample id should be enough.
     """
     # Create new DF with unique mutation counts
     data = data.groupby(["icgc_sample_id"])["icgc_mutation_id"].nunique().reset_index()
@@ -24,8 +27,10 @@ def get_sorted_mutation_count(data: pd.DataFrame):
 
 def get_max_and_min_icgc_mutation_count(data: pd.DataFrame):
     """Get icgc_sample_id with maximum and minimum unique icgc_mutation_id count.
-    If more than one sample ids have highest/lowest number of mutations,
-    a sample id with higher alphanumeric precedence is returned
+    If multiple sample ids have highest/lowest number of mutations, a sample id with higher alphanumeric precedence is returned
+
+    NOTE: In a real application, it might've been more useful to return all sample ids that have a maximum/minimum number of mutations
+    But for this task, one sample id should be enough.
     """
     icgc_sorted_count = get_sorted_mutation_count(data)
 
